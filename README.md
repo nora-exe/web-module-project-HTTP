@@ -1,20 +1,126 @@
 # HTTP / AJAX II React Module Project: Movie CRUD
 
-This module explored HTTP methods, REST interfaces, CRUD apps and using put and delete to allow editing and deleting functionality. We also dug into how to pass props to Route connected components and using URL params to get values from an api. In this project, you will practice each of these skills by implement various pieces of functionality in a movie database CRUD app.
+This module explored HTTP methods, REST interfaces, CRUD apps and using `put` and `delete` to allow editing and deleting functionality. We also dug into how to pass props to Route connected components and using URL params to get values from an api. In this project, you will practice each of these skills by implement various pieces of functionality in a movie database CRUD app.
+
+## Introduction
+CRUD applications are the foundation of most web applications. Being able to manage creating, edit and deleting data from an external source is as key a skill as it gets. In this project, you will complete the code necessary to allow all of these fundamental actions.
 
 ## Objectives
 - Understand how to use the post, put and delete HTTP methods to interact with server data.
 - Understand how to sync server data with an applications internal state.
 - Understand how to pass values into a Route component to allow for the updating of state.
 
-## Introduction
-CRUD applications are the foundation of most web applications. Being able to manage creating, edit and deleting data from an external source is as key a skill as it gets. In this project, you will complete the code nessisary to allow all of these fundmental actions.
 
 ![Movie DB Example](project-goals.gif)
 
-***Make sure to complete your tasks one at a time and complete test each task before proceeding forward.***
+## Key Concepts:
+* [request](https://www.tutorialspoint.com/http/http_requests.htm) - a single message sent to a server in the service of getting data and / or executing a server action
+* [HTTP](https://www.computerhope.com/jargon/h/http.htm) - Hyper Text Transfer Protocal - A standardized structure for internet requests
+* [CRUD Applications](https://www.codecademy.com/articles/what-is-crud) - Create Read Update Delete - basic functions of any applications that access and manipulate a data resource
+* [REST](https://restfulapi.net/) - Representational State Transfer - A standardized architecture for constructing endpoint urls, HTTP methods and other needs of modern api
 
-## Instructions
+## Key Terminology:
+* [spread](https://www.ma-no.org/en/programming/javascript/javascript-hellip-spread-and-rest-operators) - a very flexible javascript syntax that allows programmers to manipulate values in arrays and objects
+* [React Router](https://reactrouter.com/) - a library used to connect url paths directly to React components
+* [React Router hooks](https://css-tricks.com/the-hooks-of-react-router/) - an in-depth explication of the implicates of using hooks with route components.
+
+## Links
+* 🎥[GP](https://youtu.be/WpblpH91oFM)
+* 🎥[MP](https://www.loom.com/share/f1424033705b4913a5f2f6dedea44d3c)
+
+## Steps
+### Delete
+```js
+<Route path="/movies/:id">
+  <Movie deleteMovie={deleteMovie}/>
+</Route>
+```
+```js
+const deleteMovie = (id) => {
+  setMovies(movies.filter(item => (item.id !== Number(id))))
+}
+```
+```js
+const onDelete = () => {
+    axios
+        .delete(`http://localhost:5000/api/movies/${id}`)
+        .then(res => {
+            props.deleteMovie(id);
+            console.log("Movie deleted.");
+            push(`/movies`);
+        })
+        .catch(err => {
+            console.log(err.response);
+        })
+}
+```
+
+### Add
+```js
+import AddMovieForm from './components/AddMovieForm';
+```
+```js
+<Route path="/movies/add/">
+  <AddMovieForm setMovies={setMovies} />
+</Route>
+```
+```js
+<Link to="/movies/add" className="btn btn-success"><i className="material-icons">&#xE147;</i> <span>Add New Movie</span></Link>
+```
+```js
+  const handleSubmit = (e) => {
+  e.preventDefault();
+      axios
+          .post(`http://localhost:5000/api/movies/`, movie)
+          .then(res => {
+              props.setMovies(res.data);
+              console.log('user just added: ', movie);
+              push(`/movies`);
+          })
+          .catch(err => {
+              console.log(err.response);
+          })
+}
+```
+
+### Edit
+```js
+<Route path="/movies/edit/:id">
+  <EditMovieForm setMovies={setMovies} />
+</Route>
+```
+```js
+const { id } = useParams();
+```
+
+```js
+const handleSubmit = (e) => {
+		e.preventDefault();
+		axios
+			.put(`http://localhost:5000/api/movies/${id}`, movie)
+			.then(res => {
+				props.setMovies(res.data);
+				push(`/movies/${id}`);
+			})
+			.catch(err => {
+				console.log(err.response);
+			})
+	}
+
+	useEffect(() => {
+		axios
+			.get(`http://localhost:5000/api/movies/${id}`)
+			.then(res => {
+				setMovie(res.data)
+			})
+			.catch(err => {
+				console.log(err.response);
+			})
+
+	}, [])
+```
+
+## Project Instructions
 ### Task 1: Project Set Up
 * [ ] Create a forked copy of this project.
 * [ ] Clone your OWN version of the repository in your terminal
